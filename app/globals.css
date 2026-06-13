@@ -1,13 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap');
 @import "tailwindcss";
 
 @theme {
   /* Custom Colors */
-  --color-theme: #2b3a55;
-  --color-faint-bg: #2b3a55b8;
-  --color-primary: rgb(44, 187, 198);
-  --color-primary-foreground: rgb(255, 255, 255);
-  --color-accent: rgb(254,164,164);
-  --color-accent-foreground: rgb(255, 255, 255);
+  --color-theme: #2D1210;
+  --color-faint-bg: #2D1210b8;
+  --color-primary: #D4AF37;
+  --color-primary-foreground: #FFFFFF;
+  --color-accent: #C5A059;
+  --color-accent-foreground: #FFFFFF;
+
+  /* Brand Specific */
+  --color-chocolate: #2D1210;
+  --color-chocolate-light: #4A241F;
+  --color-gold: #D4AF37;
+  --color-gold-light: #F4E4BC;
 
   /* Container */
   --container-center: true;
@@ -74,6 +81,17 @@
     @apply max-w-6xl mx-auto px-4;
   }
 
+  /* Aesthetic business name style */
+  .aesthetic-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg, var(--color-gold), #b68b50 60%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
   /* shadcn/ui Utility Classes */
   .bg-background {
     @apply bg-white;
@@ -100,11 +118,11 @@
   }
 
   .bg-primary {
-    @apply bg-gradient-to-br from-[rgb(44,187,198)] to-[rgb(54,122,255)];
+    @apply bg-gold;
   }
 
   .text-primary {
-    @apply text-[rgb(44,187,198)];
+    @apply text-gold;
   }
 
   .text-primary-foreground {
@@ -136,11 +154,11 @@
   }
 
   .bg-accent {
-    @apply bg-[rgb(215,41,54)];
+    @apply bg-accent;
   }
 
   .text-accent {
-    @apply text-[rgb(215,41,54)];
+    @apply text-accent;
   }
 
   .text-accent-foreground {

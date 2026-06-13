@@ -25,10 +25,10 @@ export function WhatsAppButton({ itemName, price, slug }: WhatsAppButtonProps) {
   return (
     <button
       onClick={handleWhatsApp}
-      className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-green-500/25"
+      className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-chocolate dark:bg-gold text-white dark:text-chocolate font-bold rounded-xl transition-all duration-200 hover:shadow-lg active:scale-95 shadow-sm"
     >
       <MessageCircle className="w-5 h-5" />
-      Contact on WhatsApp
+      Order via WhatsApp
     </button>
   );
 }

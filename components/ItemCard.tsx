@@ -25,14 +25,14 @@ export function ItemCard({
 
   return (
     <article 
-      className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+      className="bg-white dark:bg-chocolate-light/20 rounded-2xl shadow-sm border border-gray-100 dark:border-gold/10 overflow-hidden cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
       onClick={() => onClick(item)}
     >
-      <div className="relative aspect-square bg-gray-100 dark:bg-gray-700">
+      <div className="relative aspect-[4/5] bg-gray-50 dark:bg-chocolate-light/40">
         {imageUrl ? (
           <MediaPreview media={{type: "image", url: imageUrl}} itemName={item.name} />
         ) : (
-          <div className="flex items-center justify-center w-full h-full text-gray-400">
+          <div className="flex items-center justify-center w-full h-full text-gray-300">
             No image
           </div>
         )}
@@ -41,36 +41,34 @@ export function ItemCard({
             e.stopPropagation();
             onFavouriteToggle(item._id);
           }}
-          className="absolute top-2 right-2 p-2 rounded-full bg-white/90 dark:bg-gray-900/90 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          className="absolute top-3 right-3 p-2.5 rounded-full bg-white/95 dark:bg-chocolate/90 shadow-md hover:scale-110 transition-transform z-10"
           aria-label={isFavourite ? 'Remove from favourites' : 'Add to favourites'}
         >
           <Heart 
-            className={`w-4 h-4 ${isFavourite ? 'fill-red-500 text-red-500' : 'text-gray-600 dark:text-gray-400'}`} 
+            className={`w-4 h-4 ${isFavourite ? 'fill-red-500 text-red-500' : 'text-chocolate dark:text-gold'}`} 
           />
         </button>
       </div>
 
       <div className="p-4">
-        <h3 className="font-semibold text-gray-900 dark:text-white mb-1 line-clamp-1">
+        <h3 className="font-bold text-chocolate dark:text-gold-light mb-1.5 line-clamp-1 tracking-tight">
           {item.name}
         </h3>
-        <p className="text-lg font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1 mb-3">
-          <i className='mr-1'>₦</i>
+        <p className="text-xl font-extrabold text-chocolate dark:text-gold flex items-center gap-0.5 mb-4">
+          <span className="text-sm font-normal opacity-80 mr-0.5">₦</span>
           {item.price.toLocaleString()}
         </p>
 
-        <div className="flex gap-2">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onWhatsApp(item);
-            }}
-            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium rounded-lg transition-colors"
-          >
-            <MessageCircle className="w-4 h-4" />
-            WhatsApp
-          </button>
-        </div>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onWhatsApp(item);
+          }}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-chocolate dark:bg-gold text-white dark:text-chocolate text-sm font-bold rounded-xl hover:opacity-90 active:scale-95 transition-all shadow-sm"
+        >
+          <MessageCircle className="w-4 h-4" />
+          Order Now
+        </button>
       </div>
     </article>
   );

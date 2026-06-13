@@ -81,6 +81,7 @@ export async function DELETE(
         item.media.map(async ({ url }) => {
           // Extract public ID from URL
           const publicId = url.split("/").pop()?.split(".")[0];
+          console.log("public ID", publicId);
           if (publicId) {
             return deleteImage(`catalog-items/${publicId}`);
           }

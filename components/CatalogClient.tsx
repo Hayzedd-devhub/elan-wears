@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import Image from "next/image";
 import { Header } from "@/components/Header";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { ItemCard } from "@/components/ItemCard";
@@ -81,7 +82,7 @@ export default function CatalogClient({
     }
 
     return filtered;
-  }, [items, activeCategory, searchQuery]);
+  }, [items, activeCategory, searchQuery, favourites]);
 
   const handleItemClick = (item: ItemProps) => {
     setSelectedItem(item);
@@ -107,49 +108,74 @@ export default function CatalogClient({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-[#FDFBF7] dark:bg-chocolate">
       <Header
         businessName={businessName}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onFavouritesClick={() => {
-          // Show user's favourites or filter items
           setActiveCategory("Favourites");
         }}
       />
 
-      <CategoryTabs
-        categories={categories}
-        activeCategory={activeCategory}
-        onCategoryChange={setActiveCategory}
-      />
-
-      <main className="px-4 py-6">
-        {isLoading ? (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          </div>
-        ) : filteredItems.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500 dark:text-gray-400">
-              {searchQuery ? "No items found" : "No items available"}
+      {!searchQuery && activeCategory === "all" && (
+        <div className="relative h-48 sm:h-64 overflow-hidden mb-6">
+          <div className="absolute inset-0 bg-black/40 z-10" />
+          <Image
+            src="/background.jpeg"
+            alt="Brand Background"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="bg-[#000000CC] absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2 drop-shadow-lg tracking-tight">
+              Premium Footwear
+            </h2>
+            <p className="text-gold-light text-sm sm:text-base max-w-md drop-shadow-md">
+              Discover comfort and style in every step with our exclusive
+              collection.
             </p>
           </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filteredItems.map((item) => (
-              <ItemCard
-                key={item._id}
-                item={item}
-                isFavourite={favourites.has(item._id)}
-                onFavouriteToggle={handleFavouriteToggle}
-                onWhatsApp={handleWhatsApp}
-                onClick={handleItemClick}
-              />
-            ))}
-          </div>
-        )}
-      </main>
+        </div>
+      )}
+
+      <div className="max-w-6xl mx-auto">
+        <CategoryTabs
+          categories={categories}
+          activeCategory={activeCategory}
+          onCategoryChange={setActiveCategory}
+        />
+
+        <main className="px-4 py-6">
+          {isLoading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gold"></div>
+            </div>
+          ) : filteredItems.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-gray-500 dark:text-gold/60 text-lg">
+                {searchQuery
+                  ? "No items match your search"
+                  : "No items available in this category"}
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+              {filteredItems.map((item) => (
+                <ItemCard
+                  key={item._id}
+                  item={item}
+                  isFavourite={favourites.has(item._id)}
+                  onFavouriteToggle={handleFavouriteToggle}
+                  onWhatsApp={handleWhatsApp}
+                  onClick={handleItemClick}
+                />
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
 
       <ItemModal
         item={selectedItem}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { AdminLayout } from '@/components/AdminLayout';
-import { Plus, Trash2, Tag, AlertCircle } from 'lucide-react';
+import { Plus, Trash2, Tag, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 interface Category {
   _id: string;
@@ -28,15 +28,13 @@ export default function AdminCategoriesPage() {
       const response = await fetch('/api/categories');
       if (response.ok) {
         const data = await response.json();
-        // Handle both new format (with _id) and legacy format (just strings)
         if (data.fromCollection && Array.isArray(data.categories)) {
           setCategories(data.categories.map((cat: any, ind: number) => ({
-            _id: ind,
+            _id: ind.toString(),
             name: cat,
             createdAt: new Date().toISOString(),
           })));
         } else {
-          // Legacy format - convert strings to Category objects
           setCategories(data.categories.map((name: string, index: number) => ({
             _id: `legacy-${index}`,
             name,
@@ -95,9 +93,7 @@ export default function AdminCategoriesPage() {
     }
 
     try {
-      // For now, we'll just show a message since we haven't implemented delete API
-      // In a full implementation, you'd add a DELETE endpoint
-      alert('Category deletion would require a DELETE endpoint. The category remains in the collection.');
+      alert('Category deletion is currently disabled to prevent accidental data loss. Please contact support if you need to remove a category permanently.');
     } catch (error) {
       console.error('Error deleting category:', error);
       alert('Failed to delete category');
@@ -106,11 +102,16 @@ export default function AdminCategoriesPage() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Manage Categories
-          </h1>
+      <div className="space-y-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-extrabold text-chocolate dark:text-gold tracking-tight">
+              Product Categories
+            </h1>
+            <p className="text-gray-500 dark:text-gold/60 mt-1">
+              Organize your footwear collection into logical groups.
+            </p>
+          </div>
           {!showForm && (
             <button
               onClick={() => {
@@ -118,49 +119,53 @@ export default function AdminCategoriesPage() {
                 setError('');
                 setSuccess('');
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex items-center justify-center gap-2 px-6 py-3.5 bg-chocolate dark:bg-gold text-white dark:text-chocolate rounded-2xl font-bold shadow-lg shadow-chocolate/20 dark:shadow-gold/10 hover:opacity-95 active:scale-95 transition-all"
             >
-              <Plus className="w-4 h-4" />
-              Add Category
+              <Plus className="w-5 h-5" />
+              New Category
             </button>
           )}
         </div>
 
         {showForm && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-              Add New Category
+          <div className="bg-white dark:bg-chocolate-light/20 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gold/10 backdrop-blur-sm">
+            <h2 className="text-xl font-bold text-chocolate dark:text-gold mb-8 flex items-center gap-3">
+              <div className="p-2 bg-gold/10 rounded-lg">
+                <Tag className="w-5 h-5" />
+              </div>
+              Define New Category
             </h2>
             
             {error && (
-              <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-2 text-red-700 dark:text-red-400">
-                <AlertCircle className="w-5 h-5" />
+              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl flex items-center gap-3 text-red-700 dark:text-red-400 font-medium">
+                <AlertCircle className="w-5 h-5 shrink-0" />
                 {error}
               </div>
             )}
             
             {success && (
-              <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-700 dark:text-green-400">
+              <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl flex items-center gap-3 text-green-700 dark:text-green-400 font-medium">
+                <CheckCircle2 className="w-5 h-5 shrink-0" />
                 {success}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-bold text-chocolate dark:text-gold-light ml-1 mb-2">
                   Category Name
                 </label>
                 <input
                   type="text"
                   value={newCategoryName}
                   onChange={(e) => setNewCategoryName(e.target.value)}
-                  placeholder="e.g., Dresses, Shoes, Accessories"
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="e.g., Casual Sneakers, Formal Boots"
+                  className="w-full px-5 py-3.5 border border-gray-200 dark:border-gold/20 rounded-xl bg-gray-50 dark:bg-chocolate text-chocolate dark:text-white focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all"
                   required
                 />
               </div>
 
-              <div className="flex gap-3 pt-4">
+              <div className="flex gap-4 pt-2">
                 <button
                   type="button"
                   onClick={() => {
@@ -168,7 +173,7 @@ export default function AdminCategoriesPage() {
                     setNewCategoryName('');
                     setError('');
                   }}
-                  className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  className="flex-1 px-5 py-4 border border-gray-200 dark:border-gold/20 rounded-xl text-chocolate dark:text-gold font-bold hover:bg-gray-50 dark:hover:bg-gold/5 transition-all"
                   disabled={isSubmitting}
                 >
                   Cancel
@@ -176,9 +181,9 @@ export default function AdminCategoriesPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-5 py-4 bg-chocolate dark:bg-gold text-white dark:text-chocolate rounded-xl font-bold shadow-lg shadow-chocolate/20 dark:shadow-gold/10 hover:opacity-90 transition-all disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Creating...' : 'Create Category'}
+                  {isSubmitting ? 'Processing...' : 'Save Category'}
                 </button>
               </div>
             </form>
@@ -186,55 +191,60 @@ export default function AdminCategoriesPage() {
         )}
 
         {isLoading ? (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="flex justify-center py-20">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gold"></div>
           </div>
         ) : categories.length === 0 ? (
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-12 shadow-sm border border-gray-200 dark:border-gray-700 text-center">
-            <Tag className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              No categories yet. Create your first category to organize your items.
+          <div className="bg-white dark:bg-chocolate-light/20 rounded-3xl p-16 shadow-sm border border-gray-100 dark:border-gold/10 text-center backdrop-blur-sm">
+            <div className="w-20 h-20 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Tag className="w-10 h-10 text-gold" />
+            </div>
+            <h3 className="text-xl font-bold text-chocolate dark:text-gold mb-2">No Categories Defined</h3>
+            <p className="text-gray-500 dark:text-gold/50 mb-8 max-w-sm mx-auto">
+              Organization is key to a great catalog. Create your first category to group your products.
             </p>
             <button
               onClick={() => setShowForm(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3.5 bg-chocolate dark:bg-gold text-white dark:text-chocolate rounded-2xl font-bold shadow-lg shadow-chocolate/20 dark:shadow-gold/10 hover:opacity-95 active:scale-95 transition-all"
             >
-              <Plus className="w-4 h-4" />
-              Add Category
+              <Plus className="w-5 h-5" />
+              Define First Category
             </button>
           </div>
         ) : (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="bg-white dark:bg-chocolate-light/20 rounded-3xl shadow-sm border border-gray-100 dark:border-gold/10 overflow-hidden backdrop-blur-sm">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-gray-700/50">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Category Name
+                <thead>
+                  <tr className="bg-gray-50 dark:bg-gold/5 border-b border-gray-100 dark:border-gold/10">
+                    <th className="px-6 py-4 text-left text-[11px] font-black text-gray-400 dark:text-gold/40 uppercase tracking-widest">
+                      Category Identification
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Actions
+                    <th className="px-6 py-4 text-right text-[11px] font-black text-gray-400 dark:text-gold/40 uppercase tracking-widest">
+                      Management
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="divide-y divide-gray-100 dark:divide-gold/10">
                   {categories.map((category) => (
-                    <tr key={category._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <Tag className="w-4 h-4 text-gray-400" />
-                          <span className="font-medium text-gray-900 dark:text-white">
+                    <tr key={category._id} className="hover:bg-gray-50 dark:hover:bg-gold/5 transition-colors group">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-4">
+                          <div className="p-2.5 bg-gold/10 rounded-xl group-hover:scale-110 transition-transform">
+                            <Tag className="w-5 h-5 text-chocolate dark:text-gold" />
+                          </div>
+                          <span className="font-bold text-chocolate dark:text-white tracking-tight">
                             {category.name}
                           </span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-right">
+                      <td className="px-6 py-4 text-right">
                         <button
                           onClick={() => handleDelete(category._id, category.name)}
-                          className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
-                          title="Delete"
+                          className="p-3 text-red-400/50 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500 rounded-xl transition-all"
+                          title="Delete Category"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-5 h-5" />
                         </button>
                       </td>
                     </tr>
@@ -248,4 +258,3 @@ export default function AdminCategoriesPage() {
     </AdminLayout>
   );
 }
-

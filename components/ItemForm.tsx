@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { Upload, X, Plus } from "lucide-react";
+import { Upload, X, Plus, Trash2, Camera, Tag, DollarSign, FileText } from "lucide-react";
 import MediaPreview from "./MediaPreview";
 
 interface ItemFormProps {
@@ -20,7 +20,7 @@ interface ItemFormProps {
   isLoading?: boolean;
 }
 
-interface MediaPreview {
+interface MediaPreviewState {
   file: File;
   previewUrl: string;
   type: "image" | "video";
@@ -44,13 +44,11 @@ export function ItemForm({
   const [newCategory, setNewCategory] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
-  const [mediaPreviews, setMediaPreviews] = useState<MediaPreview[]>([]);
+  const [mediaPreviews, setMediaPreviews] = useState<MediaPreviewState[]>([]);
   const [formPrice, setFormPrice] = useState<string>(
-    initialData?.price ? initialData?.price?.toLocaleString() : "0",
+    initialData?.price ? initialData.price.toLocaleString() : "0",
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const allCategories = newCategory ? [...categories, newCategory] : categories;
 
   // Load existing media from initialData into previews
   useEffect(() => {
@@ -87,40 +85,57 @@ export function ItemForm({
           ? parseFloat(formPrice.toString().replace(/,/g, ""))
           : 0,
       };
-      // Upload new media that haven't been uploaded yet
+      
       let uploadedMedia: { url: string; type: "image" | "video" }[] = [];
 
-      console.log("Processing media preview:", mediaPreviews);
       if (mediaPreviews.length === 0) {
-        throw new Error("Please add at least one image or video.");
+        throw new Error("Please add at least one image or video for your product.");
       }
+
+      // In a real scenario, we only upload 'isNew' files, but here the API seems to expect all?
+      // Actually, looking at the previous code, it sends everything in mediaPreviews.file to /api/upload
       const uploadFormData = new FormData();
-      for (const preview of mediaPreviews)
-        uploadFormData.append("file", preview.file);
+      let hasNewFiles = false;
+      
+      for (const preview of mediaPreviews) {
+        if (preview.isNew) {
+          uploadFormData.append("file", preview.file);
+          hasNewFiles = true;
+        }
+      }
 
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: uploadFormData,
-      });
+      if (hasNewFiles) {
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: uploadFormData,
+        });
 
-      if (response.ok) {
-        const { data } = (await response.json()) as {
-          data: { url: string; type: "image" | "video" }[];
-        };
-        uploadedMedia = data;
-        console.log("Uploaded media:", uploadedMedia);
+        if (response.ok) {
+          const { data } = (await response.json()) as {
+            data: { url: string; type: "image" | "video" }[];
+          };
+          
+          // Combine existing (not new) and freshly uploaded
+          const existingMedia = mediaPreviews
+            .filter(p => !p.isNew)
+            .map(p => ({ url: p.previewUrl, type: p.type }));
+            
+          uploadedMedia = [...existingMedia, ...data];
+        } else {
+          throw new Error("Failed to process media uploads");
+        }
       } else {
-        throw new Error("Failed to upload media");
+        uploadedMedia = mediaPreviews.map(p => ({ url: p.previewUrl, type: p.type }));
       }
 
       await onSubmit({
         ...newFormData,
         media: uploadedMedia,
-        category: newCategory || formData.category || "all",
+        category: (formData.category === "__new__" ? newCategory : formData.category) || "all",
       });
     } catch (error: any) {
       console.error("Error submitting form:", error);
-      alert(error.message || "Failed to upload media. Please try again.");
+      alert(error.message || "An error occurred while saving. Please try again.");
       setIsUploading(false);
     }
   };
@@ -128,7 +143,7 @@ export function ItemForm({
   const handleMediaSelect = (files: FileList | null) => {
     if (!files || files.length === 0) return;
 
-    const newPreviews: MediaPreview[] = [];
+    const newPreviews: MediaPreviewState[] = [];
 
     for (const file of Array.from(files)) {
       if (!file.type.startsWith("image/") && !file.type.startsWith("video/"))
@@ -146,17 +161,14 @@ export function ItemForm({
 
     setMediaPreviews((prev) => [...prev, ...newPreviews]);
 
-    // Reset file input
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-    console.log("Selected media previews:", mediaPreviews);
   };
 
   const removeMedia = (index: number) => {
     setMediaPreviews((prev) => {
       const newPreviews = prev.filter((_, i) => i !== index);
-      // Revoke the object URL to avoid memory leaks
       if (prev[index].isNew && prev[index].previewUrl.startsWith("blob:")) {
         URL.revokeObjectURL(prev[index].previewUrl);
       }
@@ -182,187 +194,200 @@ export function ItemForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Item Name
-        </label>
-        <input
-          type="text"
-          value={formData.name}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, name: e.target.value }))
-          }
-          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Description
-        </label>
-        <textarea
-          value={formData.description}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, description: e.target.value }))
-          }
-          rows={4}
-          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Price
-          </label>
-          <input
-            type="string"
-            value={formPrice}
-            onChange={(e) => {
-              const value = e.target.value.replaceAll(",", "")
-              const valid = !isNaN(parseFloat(value))
-              setFormPrice(() =>
-                valid
-                  ? (parseFloat(
-                      value,
-                    ).toLocaleString() as unknown as string)
-                  : "0",
-              );
-            }}
-            min={0}
-            step={0.01}
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Category
-          </label>
-          <select
-            value={formData.category}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, category: e.target.value }))
-            }
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="all">All</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-            <option value="__new__">+ Add new category</option>
-          </select>
-        </div>
-      </div>
-
-      {formData.category === "__new__" && (
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            New Category Name
-          </label>
-          <input
-            type="text"
-            value={newCategory || ""}
-            onChange={(e) => setNewCategory(e.target.value)}
-            placeholder="Enter category name"
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-      )}
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Media
-        </label>
-
-        <div
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-          className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-            dragActive
-              ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-              : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
-          }`}
-        >
-          <Upload className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-            Drag and drop images or videos here, or click to select
-          </p>
-          <input
-            type="file"
-            accept="image/*,video/*"
-            multiple
-            ref={fileInputRef}
-            onChange={(e) => handleMediaSelect(e.target.files)}
-            className="hidden"
-            id="media-upload"
-          />
-          <label
-            htmlFor="media-upload"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Select Media
-          </label>
-        </div>
-
-        {isUploading && (
-          <p className="text-sm text-gray-500 mt-2">Uploading media...</p>
-        )}
-
-        {mediaPreviews.length > 0 && (
-          <div className="grid grid-cols-3 gap-2 mt-4">
-            {mediaPreviews.map((preview, index) => (
-              <div
-                key={index}
-                className="relative aspect-square rounded-lg flex overflow-hidden bg-gray-100 dark:bg-gray-700"
-              >
-                <MediaPreview
-                  media={{ type: preview.type, url: preview.previewUrl }}
-                  itemName={formData.name}
-                />
-                <button
-                  type="button"
-                  onClick={() => removeMedia(index)}
-                  className="absolute top-1 right-1 p-1 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors cursor-pointer"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            ))}
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Left Column: Details */}
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-bold text-chocolate dark:text-gold-light ml-1">
+              <FileText className="w-4 h-4" />
+              Product Name
+            </label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, name: e.target.value }))
+              }
+              placeholder="e.g., Signature Suede Loafers"
+              className="w-full px-5 py-3.5 border border-gray-200 dark:border-gold/20 rounded-xl bg-gray-50 dark:bg-chocolate text-chocolate dark:text-white focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all"
+              required
+            />
           </div>
-        )}
+
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-bold text-chocolate dark:text-gold-light ml-1">
+              <Plus className="w-4 h-4 rotate-45" />
+              Description
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, description: e.target.value }))
+              }
+              placeholder="Describe the style, material, and comfort..."
+              rows={5}
+              className="w-full px-5 py-3.5 border border-gray-200 dark:border-gold/20 rounded-xl bg-gray-50 dark:bg-chocolate text-chocolate dark:text-white focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all resize-none"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-bold text-chocolate dark:text-gold-light ml-1">
+                <DollarSign className="w-4 h-4" />
+                Price (₦)
+              </label>
+              <input
+                type="text"
+                value={formPrice}
+                onChange={(e) => {
+                  const value = e.target.value.replaceAll(",", "")
+                  const valid = !isNaN(parseFloat(value))
+                  setFormPrice(() =>
+                    valid
+                      ? (parseFloat(value).toLocaleString())
+                      : "0",
+                  );
+                }}
+                className="w-full px-5 py-3.5 border border-gray-200 dark:border-gold/20 rounded-xl bg-gray-50 dark:bg-chocolate text-chocolate dark:text-white focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all font-bold"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-bold text-chocolate dark:text-gold-light ml-1">
+                <Tag className="w-4 h-4" />
+                Category
+              </label>
+              <select
+                value={formData.category}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, category: e.target.value }))
+                }
+                className="w-full px-5 py-3.5 border border-gray-200 dark:border-gold/20 rounded-xl bg-gray-50 dark:bg-chocolate text-chocolate dark:text-white focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all appearance-none"
+              >
+                <option value="all">All Collection</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+                <option value="__new__">+ Define New Category</option>
+              </select>
+            </div>
+          </div>
+
+          {formData.category === "__new__" && (
+            <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+              <label className="block text-sm font-bold text-gold ml-1">
+                Custom Category Name
+              </label>
+              <input
+                type="text"
+                value={newCategory || ""}
+                onChange={(e) => setNewCategory(e.target.value)}
+                placeholder="e.g., Limited Edition"
+                className="w-full px-5 py-3.5 border-2 border-gold/30 rounded-xl bg-gold/5 dark:bg-gold/10 text-chocolate dark:text-gold-light focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold transition-all"
+                required
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Right Column: Media */}
+        <div className="space-y-6">
+          <label className="flex items-center gap-2 text-sm font-bold text-chocolate dark:text-gold-light ml-1">
+            <Camera className="w-4 h-4" />
+            Product Visuals
+          </label>
+
+          <div
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+            className={`relative border-2 border-dashed rounded-3xl p-10 text-center transition-all cursor-pointer group ${
+              dragActive
+                ? "border-gold bg-gold/5 scale-[1.01]"
+                : "border-gray-200 dark:border-gold/20 hover:border-gold/50 dark:hover:border-gold/40"
+            }`}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Upload className={`w-12 h-12 mx-auto mb-4 transition-transform group-hover:-translate-y-1 ${dragActive ? 'text-gold' : 'text-gray-300 dark:text-gold/20'}`} />
+            <p className="text-sm font-bold text-chocolate dark:text-gold-light mb-1">
+              Drop visuals here
+            </p>
+            <p className="text-xs text-gray-400 dark:text-gold/40">
+              Supports high-quality images and MP4 videos
+            </p>
+            <input
+              type="file"
+              accept="image/*,video/*"
+              multiple
+              ref={fileInputRef}
+              onChange={(e) => handleMediaSelect(e.target.files)}
+              className="hidden"
+            />
+          </div>
+
+          {(isUploading || isLoading) && (
+            <div className="flex items-center gap-2 text-gold animate-pulse">
+              <div className="w-2 h-2 rounded-full bg-gold" />
+              <span className="text-xs font-bold uppercase tracking-widest">Processing Gallery...</span>
+            </div>
+          )}
+
+          {mediaPreviews.length > 0 && (
+            <div className="grid grid-cols-3 gap-4">
+              {mediaPreviews.map((preview, index) => (
+                <div
+                  key={index}
+                  className="group relative aspect-square rounded-2xl overflow-hidden bg-gray-50 dark:bg-chocolate border border-gray-100 dark:border-gold/10 shadow-sm"
+                >
+                  <MediaPreview
+                    media={{ type: preview.type, url: preview.previewUrl }}
+                    itemName={formData.name}
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeMedia(index);
+                      }}
+                      className="p-2 rounded-full bg-red-500 text-white hover:scale-110 transition-transform shadow-lg"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="flex gap-3 pt-4">
+      <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-100 dark:border-gold/10">
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-          disabled={isLoading}
+          className="flex-1 px-6 py-4 border border-gray-200 dark:border-gold/20 rounded-2xl text-chocolate dark:text-gold font-bold hover:bg-gray-50 dark:hover:bg-gold/5 transition-all"
+          disabled={isLoading || isUploading}
         >
-          Cancel
+          Discard Changes
         </button>
         <button
           type="submit"
           disabled={isLoading || isUploading}
-          className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-[2] px-6 py-4 bg-chocolate dark:bg-gold text-white dark:text-chocolate rounded-2xl font-bold shadow-xl shadow-chocolate/20 dark:shadow-gold/10 hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
         >
-          {isUploading
-            ? "Uploading media"
-            : isLoading
-              ? "Saving..."
-              : initialData?._id
-                ? "Update Item"
-                : "Add Item"}
+          {isUploading || isLoading ? (
+            <div className="w-6 h-6 border-2 border-current border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <>
+              {initialData?._id ? "Update Product" : "Launch Product"}
+            </>
+          )}
         </button>
       </div>
     </form>

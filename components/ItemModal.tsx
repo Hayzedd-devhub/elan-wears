@@ -52,15 +52,15 @@ export function ItemModal({
         onClick={onClose}
       />
 
-      <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden">
+      <div className="relative bg-white dark:bg-chocolate rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden border border-white/10">
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 z-10 p-2 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
+          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md transition-all active:scale-90"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="relative aspect-4/3 bg-gray-100 dark:bg-gray-800">
+        <div className="relative aspect-square bg-gray-50 dark:bg-chocolate-light/40">
           {media.length > 0 ? (
             <>
               <MediaPreview
@@ -72,26 +72,26 @@ export function ItemModal({
                 <>
                   <button
                     onClick={goToPrevious}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm transition-all z-10"
                   >
-                    <ChevronLeft className="w-5 h-5" />
+                    <ChevronLeft className="w-6 h-6" />
                   </button>
                   <button
                     onClick={goToNext}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm transition-all z-10"
                   >
-                    <ChevronRight className="w-5 h-5" />
+                    <ChevronRight className="w-6 h-6" />
                   </button>
 
-                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
                     {media.map((_, index) => (
                       <button
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
-                        className={`w-2 h-2 rounded-full transition-colors ${
+                        className={`w-2.5 h-1 rounded-full transition-all ${
                           index === currentImageIndex
-                            ? "bg-white"
-                            : "bg-white/50 hover:bg-white/75"
+                            ? "w-6 bg-gold"
+                            : "bg-white/60 hover:bg-white/90"
                         }`}
                       />
                     ))}
@@ -100,51 +100,53 @@ export function ItemModal({
               )}
             </>
           ) : (
-            <div className="flex items-center justify-center w-full h-full text-gray-400">
-              No image available
+            <div className="flex items-center justify-center w-full h-full text-gray-300">
+              No media available
             </div>
           )}
         </div>
 
-        <div className="p-5 overflow-y-auto max-h-[calc(90vh-300px)]">
-          <span className="inline-block px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs font-medium rounded mb-2">
-            {item.category}
-          </span>
+        <div className="p-6 overflow-y-auto max-h-[calc(90vh-400px)]">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="px-2.5 py-0.5 bg-gold/10 dark:bg-gold/20 text-gold dark:text-gold-light text-xs font-bold rounded-lg uppercase tracking-wider">
+              {item.category}
+            </span>
+          </div>
 
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-2xl font-bold text-chocolate dark:text-white mb-2 tracking-tight">
             {item.name}
           </h2>
 
-          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1 mb-4">
-            <i className="mr-1">₦</i>
-
+          <p className="text-3xl font-extrabold text-chocolate dark:text-gold flex items-center gap-1 mb-6">
+            <span className="text-lg font-normal opacity-80">₦</span>
             {item.price.toLocaleString()}
           </p>
 
-          <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-            {item.description}
-          </p>
+          <div className="prose dark:prose-invert max-w-none mb-6">
+            <p className="text-gray-600 dark:text-gold-light/70 leading-relaxed text-base">
+              {item.description}
+            </p>
+          </div>
         </div>
 
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex gap-3">
+        <div className="p-5 bg-gray-50 dark:bg-chocolate-light/30 border-t border-gray-100 dark:border-gold/10 flex gap-4">
           <button
             onClick={() => onFavouriteToggle(item._id)}
-            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-colors ${
+            className={`flex items-center justify-center p-4 rounded-xl transition-all active:scale-95 ${
               isFavourite
-                ? "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400"
-                : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                ? "bg-red-50 dark:bg-red-900/20 text-red-500 shadow-inner"
+                : "bg-white dark:bg-chocolate text-chocolate dark:text-gold border border-gray-200 dark:border-gold/20 shadow-sm"
             }`}
           >
-            <Heart className={`w-5 h-5 ${isFavourite ? "fill-current" : ""}`} />
-            {isFavourite ? "Favourited" : "Favourite"}
+            <Heart className={`w-6 h-6 ${isFavourite ? "fill-current" : ""}`} />
           </button>
 
           <button
             onClick={() => onWhatsApp(item)}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-colors"
+            className="flex-1 flex items-center justify-center gap-3 px-6 py-4 bg-chocolate dark:bg-gold text-white dark:text-chocolate rounded-xl font-bold text-lg hover:opacity-95 active:scale-95 transition-all shadow-lg"
           >
-            <MessageCircle className="w-5 h-5" />
-            Send to WhatsApp
+            <MessageCircle className="w-6 h-6" />
+            Order on WhatsApp
           </button>
         </div>
       </div>

@@ -12,25 +12,25 @@ export function CategoryTabs({
   onCategoryChange 
 }: CategoryTabsProps) {
   return (
-    <div className="flex gap-2 overflow-x-auto px-4 py-3 scrollbar-hide border-b border-gray-200 dark:border-gray-700">
-      {/* <button
+    <div className="flex gap-3 overflow-x-auto px-4 py-4 scrollbar-hide">
+      <button
         onClick={() => onCategoryChange('all')}
-        className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+        className={`px-5 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all duration-200 border ${
           activeCategory === 'all'
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+            ? 'bg-chocolate dark:bg-gold text-white dark:text-chocolate border-chocolate dark:border-gold shadow-md'
+            : 'bg-white dark:bg-chocolate-light/10 text-chocolate dark:text-gold-light border-gray-200 dark:border-gold/20 hover:border-gold/50'
         }`}
       >
-        All
-      </button> */}
+        All Collection
+      </button>
       {categories.map((category) => (
         <button
           key={category}
           onClick={() => onCategoryChange(category)}
-          className={`px-4 py-2 rounded-full text-sm font-medium capitalize whitespace-nowrap transition-colors ${
+          className={`px-5 py-2 rounded-xl text-sm font-bold capitalize whitespace-nowrap transition-all duration-200 border ${
             activeCategory === category
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+              ? 'bg-chocolate dark:bg-gold text-white dark:text-chocolate border-chocolate dark:border-gold shadow-md'
+              : 'bg-white dark:bg-chocolate-light/10 text-chocolate dark:text-gold-light border-gray-200 dark:border-gold/20 hover:border-gold/50'
           }`}
         >
           {category}

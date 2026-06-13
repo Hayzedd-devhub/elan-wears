@@ -1,9 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { AdminLayout } from '@/components/AdminLayout';
-import { Heart, Users, TrendingUp, DollarSign } from 'lucide-react';
+import { Heart, Users, TrendingUp, Award, Star } from 'lucide-react';
 import MediaPreview from '@/components/MediaPreview';
 
 interface InsightData {
@@ -45,8 +44,8 @@ export default function AdminInsightsPage() {
   if (isLoading) {
     return (
       <AdminLayout>
-        <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="flex justify-center py-20">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gold"></div>
         </div>
       </AdminLayout>
     );
@@ -55,9 +54,9 @@ export default function AdminInsightsPage() {
   if (!insights) {
     return (
       <AdminLayout>
-        <div className="text-center py-12">
-          <p className="text-gray-600 dark:text-gray-400">
-            Unable to load insights data.
+        <div className="bg-white dark:bg-chocolate-light/20 rounded-3xl p-16 shadow-sm border border-gray-100 dark:border-gold/10 text-center backdrop-blur-sm">
+          <p className="text-chocolate dark:text-gold-light font-bold">
+            Unable to synchronize insights data. Please check your connection.
           </p>
         </div>
       </AdminLayout>
@@ -66,48 +65,53 @@ export default function AdminInsightsPage() {
 
   const stats = [
     {
-      title: 'Total Favourites',
+      title: 'Gross Favourites',
       value: insights.totalFavourites,
       icon: Heart,
-      color: 'bg-red-500',
+      color: 'bg-red-500/10 text-red-500',
     },
     {
-      title: 'Unique Users',
+      title: 'Active Audience',
       value: insights.totalUniqueUsers,
       icon: Users,
-      color: 'bg-blue-500',
+      color: 'bg-blue-500/10 text-blue-500',
     },
     {
-      title: 'Items Favourited',
+      title: 'Trend Awareness',
       value: insights.mostFavouritedItems.length,
       icon: TrendingUp,
-      color: 'bg-green-500',
+      color: 'bg-gold/10 text-gold',
     },
   ];
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Favourites Insights
-        </h1>
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-3xl font-extrabold text-chocolate dark:text-gold tracking-tight">
+            Audience Analytics
+          </h1>
+          <p className="text-gray-500 dark:text-gold/60 mt-1">
+            Understand customer preferences and identify trending styles.
+          </p>
+        </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {stats.map((stat) => (
             <div
               key={stat.title}
-              className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+              className="bg-white dark:bg-chocolate-light/20 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gold/10 backdrop-blur-sm"
             >
               <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-xl ${stat.color}`}>
-                  <stat.icon className="w-6 h-6 text-white" />
+                <div className={`p-4 rounded-2xl ${stat.color} shadow-inner`}>
+                  <stat.icon className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-xs font-bold text-gray-400 dark:text-gold/40 uppercase tracking-widest mb-0.5">
                     {stat.title}
                   </p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <p className="text-2xl font-black text-chocolate dark:text-white">
                     {stat.value}
                   </p>
                 </div>
@@ -117,87 +121,90 @@ export default function AdminInsightsPage() {
         </div>
 
         {/* Most Favourited Items */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Most Favourited Items
+        <div className="bg-white dark:bg-chocolate-light/20 rounded-3xl shadow-sm border border-gray-100 dark:border-gold/10 overflow-hidden backdrop-blur-sm">
+          <div className="px-8 py-6 border-b border-gray-100 dark:border-gold/10 flex items-center gap-3">
+            <Award className="w-6 h-6 text-gold" />
+            <h2 className="text-xl font-bold text-chocolate dark:text-gold tracking-tight">
+              Curated Style Trends
             </h2>
           </div>
 
           {insights.mostFavouritedItems.length === 0 ? (
-            <div className="p-12 text-center">
-              <Heart className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-4" />
-              <p className="text-gray-600 dark:text-gray-400">
-                No favourites yet. Share your catalog to get insights!
+            <div className="p-20 text-center">
+              <div className="w-16 h-16 bg-gold/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Star className="w-8 h-8 text-gold/30" />
+              </div>
+              <p className="text-gray-500 dark:text-gold/50 font-medium">
+                No audience engagement captured yet. Start sharing to see trends!
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-gray-700/50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Rank
+                <thead>
+                  <tr className="bg-gray-50 dark:bg-gold/5 border-b border-gray-100 dark:border-gold/10">
+                    <th className="px-8 py-4 text-left text-[11px] font-black text-gray-400 dark:text-gold/40 uppercase tracking-widest">
+                      Ranking
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Item
+                    <th className="px-8 py-4 text-left text-[11px] font-black text-gray-400 dark:text-gold/40 uppercase tracking-widest">
+                      Product Detail
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-8 py-4 text-left text-[11px] font-black text-gray-400 dark:text-gold/40 uppercase tracking-widest">
                       Category
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Price
+                    <th className="px-8 py-4 text-left text-[11px] font-black text-gray-400 dark:text-gold/40 uppercase tracking-widest">
+                      Market Value
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Favourites
+                    <th className="px-8 py-4 text-right text-[11px] font-black text-gray-400 dark:text-gold/40 uppercase tracking-widest">
+                      Popularity
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="divide-y divide-gray-100 dark:divide-gold/10">
                   {insights.mostFavouritedItems.map((item, index) => (
-                    <tr key={item._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${
+                    <tr key={item._id} className="hover:bg-gray-50 dark:hover:bg-gold/5 transition-colors group">
+                      <td className="px-8 py-6">
+                        <div className={`flex items-center justify-center w-8 h-8 rounded-xl text-xs font-black shadow-sm ${
                           index === 0 
-                            ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400'
+                            ? 'bg-gold text-chocolate ring-4 ring-gold/20'
                             : index === 1
-                            ? 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                            ? 'bg-gray-200 dark:bg-chocolate-light/60 text-chocolate dark:text-gold-light'
                             : index === 2
-                            ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400'
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                            ? 'bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400'
+                            : 'bg-gray-50 dark:bg-chocolate-light/40 text-gray-400 dark:text-gold/30'
                         }`}>
                           {index + 1}
-                        </span>
+                        </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
+                      <td className="px-8 py-6">
+                        <div className="flex items-center gap-4">
+                          <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-gray-50 dark:bg-chocolate-light/40 border border-gray-100 dark:border-gold/10 group-hover:scale-105 transition-transform">
                             {item.media?.[0] ? (
                               <MediaPreview media={item.media[0]} itemName={item.name} />
                             ) : (
-                              <div className="flex items-center justify-center w-full h-full text-gray-400">
-                                <Heart className="w-5 h-5" />
+                              <div className="flex items-center justify-center w-full h-full text-gray-300">
+                                <Heart className="w-6 h-6" />
                               </div>
                             )}
                           </div>
-                          <span className="font-medium text-gray-900 dark:text-white">
+                          <span className="font-bold text-chocolate dark:text-white tracking-tight">
                             {item.name}
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
+                      <td className="px-8 py-6">
+                        <span className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold bg-gold/10 dark:bg-gold/20 text-chocolate dark:text-gold-light uppercase tracking-wider">
                           {item.category}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className="font-medium text-gray-900 dark:text-white">
-                          ${item.price.toLocaleString()}
-                        </span>
+                      <td className="px-8 py-6">
+                        <p className="font-black text-chocolate dark:text-gold">
+                          ₦{item.price.toLocaleString()}
+                        </p>
                       </td>
-                      <td className="px-6 py-4 text-right">
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 font-medium">
-                          <Heart className="w-4 h-4 fill-current" />
+                      <td className="px-8 py-6 text-right">
+                        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 font-black shadow-inner">
+                          <Heart className="w-4.5 h-4.5 fill-current" />
                           {item.favouriteCount}
                         </span>
                       </td>
@@ -209,33 +216,32 @@ export default function AdminInsightsPage() {
           )}
         </div>
 
-        {/* User Favourites Summary */}
+        {/* User Engagement Summary */}
         {Object.keys(insights.userFavourites).length > 0 && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                User Engagement Summary
-              </h2>
-            </div>
-            <div className="p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Object.entries(insights.userFavourites).slice(0, 6).map(([userId, items]) => (
-                  <div
-                    key={userId}
-                    className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <Users className="w-4 h-4 text-gray-500" />
-                      <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">
-                        {userId.substring(0, 12)}...
-                      </span>
+          <div className="bg-white dark:bg-chocolate-light/20 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gold/10 backdrop-blur-sm">
+            <h2 className="text-xl font-bold text-chocolate dark:text-gold mb-8 flex items-center gap-3">
+              <Users className="w-6 h-6 text-gold" />
+              Audience Engagement Summary
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Object.entries(insights.userFavourites).slice(0, 6).map(([userId, items]) => (
+                <div
+                  key={userId}
+                  className="p-5 bg-gray-50 dark:bg-chocolate-light/40 border border-gray-100 dark:border-gold/5 rounded-2xl hover:border-gold/30 transition-all group"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-white dark:bg-chocolate flex items-center justify-center border border-gray-100 dark:border-gold/10">
+                      <Users className="w-4 h-4 text-chocolate dark:text-gold" />
                     </div>
-                    <p className="text-lg font-bold text-gray-900 dark:text-white">
-                      {items.length} favourite{items.length !== 1 ? 's' : ''}
-                    </p>
+                    <span className="text-[11px] text-gray-400 dark:text-gold/40 font-mono tracking-tighter">
+                      USER_{userId.substring(0, 8).toUpperCase()}
+                    </span>
                   </div>
-                ))}
-              </div>
+                  <p className="text-2xl font-black text-chocolate dark:text-gold group-hover:scale-105 transition-transform origin-left">
+                    {items.length} <span className="text-sm font-bold text-gray-500 dark:text-gold/50 ml-1">Favourites</span>
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -243,4 +249,3 @@ export default function AdminInsightsPage() {
     </AdminLayout>
   );
 }
-

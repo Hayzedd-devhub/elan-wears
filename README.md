@@ -51,8 +51,7 @@ CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
 # Admin Credentials
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=your_secure_password
+# (Not required - the first user to login will be created as admin)
 
 # WhatsApp Number (format: 1234567890, no + sign)
 WHATSAPP_NUMBER=1234567890

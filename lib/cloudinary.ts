@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -8,26 +8,31 @@ cloudinary.config({
 
 export { cloudinary };
 
-export async function uploadMedia(file: string, type: 'image' | 'video') {
+export async function uploadMedia(file: string, type: "image" | "video") {
   try {
     const result = await cloudinary.uploader.upload(file, {
-      folder: 'catalog-items',
-      resource_type: 'auto',
+      folder: "catalog-items",
+      resource_type: "auto",
     });
-    return { success: true, url: result.secure_url, publicId: result.public_id, type };
+    return {
+      success: true,
+      url: result.secure_url,
+      publicId: result.public_id,
+      type,
+    };
   } catch (error) {
-    console.error('Cloudinary upload error:', error);
-    return { success: false, error: 'Failed to upload media' };
+    console.error("Cloudinary upload error:", error);
+    return { success: false, error: "Failed to upload media" };
   }
 }
 
 export async function deleteImage(publicId: string) {
   try {
-    await cloudinary.uploader.destroy(publicId);
-    return { success: true };
+    const result = await cloudinary.uploader.destroy(publicId);
+    console.log("Cloudinary delete result:", result);
+    return { success: true, result };
   } catch (error) {
-    console.error('Cloudinary delete error:', error);
-    return { success: false, error: 'Failed to delete image' };
+    console.error("Cloudinary delete error:", error);
+    return { success: false, error: "Failed to delete image" };
   }
 }
-
