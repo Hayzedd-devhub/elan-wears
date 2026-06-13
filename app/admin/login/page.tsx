@@ -1,40 +1,40 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { ShieldCheck, Info, Eye, EyeOff } from 'lucide-react';
-import Image from 'next/image';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ShieldCheck, Info, Eye, EyeOff } from "lucide-react";
+import Image from "next/image";
 
 export default function AdminLogin() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
 
       if (data.success) {
-        localStorage.setItem('adminToken', data.token);
-        router.push('/admin/dashboard');
+        localStorage.setItem("adminToken", data.token);
+        router.push("/admin/dashboard");
       } else {
-        setError(data.error || 'Login failed');
+        setError(data.error || "Login failed");
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -45,11 +45,11 @@ export default function AdminLogin() {
       <div className="w-full max-w-md">
         <div className="bg-white dark:bg-chocolate-light/20 rounded-3xl shadow-2xl p-8 border border-gray-100 dark:border-gold/10 backdrop-blur-sm">
           <div className="flex flex-col items-center justify-center gap-4 mb-10">
-            <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-gold shadow-lg">
-              <Image 
-                src="/brand-logo.jpeg" 
-                alt="Brand Logo" 
-                fill 
+            <div className="relative w-46 h-16 rounded-2xl overflow-hidden border-2 border-gold shadow-lg">
+              <Image
+                src="/logo-main.jpeg"
+                alt="Brand Logo"
+                fill
                 className="object-cover"
               />
             </div>
@@ -67,7 +67,9 @@ export default function AdminLogin() {
             <div className="p-4 bg-gold/5 dark:bg-gold/10 border border-gold/20 rounded-2xl flex gap-3 items-start">
               <Info className="w-5 h-5 text-gold shrink-0 mt-0.5" />
               <p className="text-xs text-chocolate/80 dark:text-gold-light/80 leading-relaxed">
-                <span className="font-bold">Setup Note:</span> If this is the first time accessing the console, the credentials you enter below will become your permanent admin login.
+                <span className="font-bold">Setup Note:</span> If this is the
+                first time accessing the console, the credentials you enter
+                below will become your permanent admin login.
               </p>
             </div>
 
@@ -97,7 +99,7 @@ export default function AdminLogin() {
               </label>
               <div className="relative">
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter secure password"
@@ -107,7 +109,7 @@ export default function AdminLogin() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((s) => !s)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 >
                   {showPassword ? (

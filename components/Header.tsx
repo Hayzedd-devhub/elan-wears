@@ -23,7 +23,7 @@ export function Header({
           <div className="flex items-center gap-3">
             <div className="relative w-40 h-10 rounded-md overflow-hidden border border-gold/30">
               <Image
-                src="/brand-logo.jpeg"
+                src="/logo-main.jpeg"
                 alt="Brand Logo"
                 fill
                 className="object-cover"
