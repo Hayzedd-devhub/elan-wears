@@ -10,7 +10,7 @@ No user authentication is required for customers.
 
 Each visitor should be automatically assigned a unique anonymous user ID, stored in localStorage if it does not already exist.
 
-Landing Page
+Landing Page:
 
 Display:
 
