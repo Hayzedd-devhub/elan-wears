@@ -108,7 +108,7 @@ export default function CatalogClient({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full min-h-screen">
       <Header
         businessName={businessName}
         searchQuery={searchQuery}
