@@ -1,7 +1,7 @@
 Build a simple, intuitive digital catalog / price list web app designed for small businesses (e.g. food vendors, service providers, item sellers).
 The goal is to clearly display items and prices and allow users to quickly interact without creating accounts.
 
-Core Requirements (MVP)
+Core Requirements (MVP).
 General
 
 The app should be mobile-first, responsive, and fast.
