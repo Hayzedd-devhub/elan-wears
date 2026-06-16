@@ -195,71 +195,71 @@
 
   /* Dark Mode Classes */
   .dark .bg-background {
-    @apply bg-gray-900;
+    @apply bg-chocolate;
   }
 
   .dark .text-foreground {
-    @apply text-gray-50;
+    @apply text-gold-light;
   }
 
   .dark .bg-card {
-    @apply bg-gray-900;
+    @apply bg-chocolate-light/20;
   }
 
   .dark .text-card-foreground {
-    @apply text-gray-50;
+    @apply text-gold-light;
   }
 
   .dark .bg-popover {
-    @apply bg-gray-900;
+    @apply bg-chocolate;
   }
 
   .dark .text-popover-foreground {
-    @apply text-gray-50;
+    @apply text-gold-light;
   }
 
   .dark .bg-primary {
-    @apply bg-[rgb(44,187,198)];
+    @apply bg-gold;
   }
 
   .dark .text-primary {
-    @apply text-[rgb(44,187,198)];
+    @apply text-gold;
   }
 
   .dark .text-primary-foreground {
-    @apply text-white;
+    @apply text-chocolate;
   }
 
   .dark .bg-secondary {
-    @apply bg-gray-800;
+    @apply bg-chocolate-light/40;
   }
 
   .dark .text-secondary {
-    @apply text-gray-50;
+    @apply text-gold-light;
   }
 
   .dark .text-secondary-foreground {
-    @apply text-gray-50;
+    @apply text-gold-light;
   }
 
   .dark .bg-muted {
-    @apply bg-gray-800;
+    @apply bg-chocolate-light/30;
   }
 
   .dark .text-muted {
-    @apply text-gray-800;
+    @apply text-gold/40;
   }
 
   .dark .text-muted-foreground {
-    @apply text-gray-400;
+    @apply text-gold/60;
   }
 
   .dark .bg-accent {
-    @apply bg-[rgb(215,41,54)];
+    @apply bg-gold/10;
   }
 
   .dark .text-accent {
-    @apply text-[rgb(215,41,54)];
+    @apply text-gold;
   }
 
   .dark .text-accent-foreground {
@@ -271,7 +271,7 @@
   }
 
   .dark .text-destructive {
-    @apply text-red-900;
+    @apply text-red-400;
   }
 
   .dark .text-destructive-foreground {
@@ -279,14 +279,14 @@
   }
 
   .dark .border-border {
-    @apply border-gray-800;
+    @apply border-gold/20;
   }
 
   .dark .border-input {
-    @apply border-gray-800;
+    @apply border-gold/20;
   }
 
   .dark .ring-ring {
-    @apply ring-gray-300;
+    @apply ring-gold/50;
   }
 }

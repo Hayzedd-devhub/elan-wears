@@ -28,7 +28,7 @@ export default async function Home() {
   const [items, categories] = await Promise.all([getItems(), getCategories()]);
   
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <main className="min-h-screen bg-[#FDFBF7] dark:bg-chocolate">
       <CatalogClient items={items} categories={categories} />
     </main>
   );

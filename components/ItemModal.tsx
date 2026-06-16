@@ -52,7 +52,7 @@ export function ItemModal({
         onClick={onClose}
       />
 
-      <div className="relative bg-white dark:bg-chocolate rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden border border-white/10">
+      <div className="relative bg-white dark:bg-chocolate rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto border border-white/10">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md transition-all active:scale-90"

@@ -25,7 +25,7 @@ export function ItemCard({
 
   return (
     <article 
-      className="bg-white dark:bg-chocolate-light/20 rounded-2xl shadow-sm border border-gray-100 dark:border-gold/10 overflow-hidden cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+      className="bg-white dark:bg-chocolate-light/20 rounded-2xl shadow-sm border border-gray-100 dark:border-gold/10 overflow-hidden cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-[transform,box-shadow,background-color,border-color] duration-300"
       onClick={() => onClick(item)}
     >
       <div className="relative aspect-[4/5] bg-gray-50 dark:bg-chocolate-light/40">
@@ -64,7 +64,7 @@ export function ItemCard({
             e.stopPropagation();
             onWhatsApp(item);
           }}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-chocolate dark:bg-gold text-white dark:text-chocolate text-sm font-bold rounded-xl hover:opacity-90 active:scale-95 transition-all shadow-sm"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-chocolate dark:bg-gold text-white dark:text-chocolate text-sm font-bold rounded-xl hover:opacity-90 active:scale-95 transition-[opacity,transform] shadow-sm"
         >
           <MessageCircle className="w-4 h-4" />
           Order Now
