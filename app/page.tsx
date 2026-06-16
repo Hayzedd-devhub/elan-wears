@@ -2,6 +2,8 @@ import { connectToDatabase } from '@/lib/mongodb';
 import { Item } from '@/models/Item';
 import CatalogClient from '@/components/CatalogClient';
 
+export const revalidate = 0;
+
 async function getItems() {
   try {
     await connectToDatabase();

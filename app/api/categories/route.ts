@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import { Item } from '@/models/Item';
 import { Category } from '@/models/Category';
+import { revalidatePath } from 'next/cache';
 
 export async function GET() {
   try {
@@ -56,6 +57,8 @@ export async function POST(request: NextRequest) {
     }
 
     const newCategory = await Category.create({ name: categoryName });
+
+    revalidatePath("/");
 
     return NextResponse.json({
       success: true,

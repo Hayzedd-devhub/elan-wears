@@ -20,44 +20,19 @@ export default function CatalogClient({
   categories: initialCategories,
 }: CatalogClientProps) {
   const [items, setItems] = useState(initialItems);
-  const [categories, setCategories] = useState(initialCategories);
+  const [categories] = useState([...initialCategories, "Favourites"]);
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState<
     (typeof initialItems)[0] | null
   >(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const userId = useAnonymousUser();
   const { favourites, toggleFavourite } = useFavourites(userId);
 
   const businessName = process.env.NEXT_PUBLIC_BUSINESS_NAME || "My Catalog";
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [itemsRes, categoriesRes] = await Promise.all([
-          fetch("/api/items"),
-          fetch("/api/categories"),
-        ]);
-
-        if (itemsRes.ok) {
-          const data = await itemsRes.json();
-          setItems(data.items);
-        }
-        if (categoriesRes.ok) {
-          const data = await categoriesRes.json();
-          setCategories([...data.categories, "Favourites"]);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const filteredItems = useMemo(() => {
     let filtered = items;
@@ -148,11 +123,7 @@ export default function CatalogClient({
         />
 
         <main className="px-4 py-6">
-          {isLoading ? (
-            <div className="flex justify-center items-center py-20">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gold"></div>
-            </div>
-          ) : filteredItems.length === 0 ? (
+          {filteredItems.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-gray-500 dark:text-gold/60 text-lg">
                 {searchQuery

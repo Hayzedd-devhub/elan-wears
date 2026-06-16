@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Item } from "@/models/Item";
 import { generateSlug } from "@/lib/util";
+import { revalidatePath } from "next/cache";
 
 export async function GET(request: NextRequest) {
   try {
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
 
     while (exists) {
       slug = generateSlug(name);
-      let existed = await Item.findOne({ where: { slug } });
+      let existed = await Item.findOne({ slug });
       exists = !!existed;
     }
 
@@ -53,6 +54,8 @@ export async function POST(request: NextRequest) {
       media: media || [],
       category,
     });
+
+    revalidatePath("/");
 
     return NextResponse.json({ item }, { status: 201 });
   } catch (error) {

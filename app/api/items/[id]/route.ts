@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Item } from "@/models/Item";
 import { deleteImage } from "@/lib/cloudinary";
+import { revalidatePath } from "next/cache";
 
 export async function GET(
   request: NextRequest,
@@ -51,6 +52,8 @@ export async function PUT(
       return NextResponse.json({ error: "Item not found" }, { status: 404 });
     }
 
+    revalidatePath("/");
+
     return NextResponse.json({ item });
   } catch (error) {
     console.error("Error updating item:", error);
@@ -94,6 +97,8 @@ export async function DELETE(
     // Delete item from database
 
     await Item.findByIdAndDelete(id);
+
+    revalidatePath("/");
 
     return NextResponse.json({ success: true });
   } catch (error) {
