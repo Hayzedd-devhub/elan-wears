@@ -12,7 +12,7 @@ export function CategoryTabs({
   onCategoryChange 
 }: CategoryTabsProps) {
   return (
-    <div className="flex gap-3 overflow-x-auto px-4 py-4 scrollbar-hide">
+    <div className="flex gap-3 overflow-x-auto px-4 py-4 scrollbar-hide touch-pan-x transform-gpu">
       <button
         onClick={() => onCategoryChange('all')}
         className={`px-5 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-[background-color,color,border-color,box-shadow] duration-200 border ${

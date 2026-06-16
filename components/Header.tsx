@@ -17,7 +17,7 @@ export function Header({
   onFavouritesClick,
 }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-40 bg-white dark:bg-chocolate border-b border-gold/20 shadow-sm will-change-transform isolate">
+    <header className="sticky top-0 z-40 bg-white dark:bg-chocolate border-b border-gold/20 shadow-sm transform-gpu will-change-transform isolate">
       <div className="max-w-6xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between gap-4 mb-4">
           <div className="flex items-center gap-3">

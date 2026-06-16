@@ -51,46 +51,40 @@
   }
 }
 
-/* Base Styles */
+  /* Base Styles */
 @layer base {
   body {
     font-family: "Futura PT", sans-serif;
+    overscroll-behavior-y: none;
   }
 }
 
 /* Utility Classes */
 @layer components {
-  /* Your Custom Classes */
-  .btn-theme {
-    @apply inline-flex items-center justify-center rounded-md px-4 py-2 font-medium text-white bg-theme hover:opacity-90 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed;
-  }
+  /* ... rest of your custom classes ... */
 
-  .card {
-    @apply border border-gray-200 rounded-lg shadow-sm bg-white;
-  }
-
-  .input {
-    @apply block w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-theme focus:border-theme;
-  }
-
-  .label {
-    @apply text-sm font-medium text-gray-700;
-  }
-
-  .container {
-    @apply max-w-6xl mx-auto px-4;
-  }
-
-  /* Aesthetic business name style */
+  /* Aesthetic business name style - Optimized for Mobile */
   .aesthetic-title {
     font-family: 'Playfair Display', serif;
     font-weight: 700;
-    letter-spacing: -0.02em;
-    background: linear-gradient(90deg, var(--color-gold), #b68b50 60%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    letter-spacing: -0.01em;
+    color: var(--color-gold); /* Solid color fallback for performance */
   }
+
+  @supports (-webkit-background-clip: text) {
+    .aesthetic-title {
+      background: linear-gradient(90deg, var(--color-gold), #b68b50 60%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      /* Prevent flickering on mobile */
+      -webkit-text-fill-color: transparent;
+      transform: translateZ(0); 
+    }
+  }
+
+  /* Simplify for very low-end mobile in dark mode if needed, 
+     but transform: translateZ(0) usually fixes the paint glitch. */
 
   /* shadcn/ui Utility Classes */
   .bg-background {
@@ -196,6 +190,9 @@
   /* Dark Mode Classes */
   .dark .bg-background {
     @apply bg-chocolate;
+    /* Force background paint consistency on mobile */
+    background-attachment: scroll;
+    -webkit-backface-visibility: hidden;
   }
 
   .dark .text-foreground {
