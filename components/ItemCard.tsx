@@ -25,12 +25,14 @@ export function ItemCard({
 
   return (
     <article 
-      className="bg-white dark:bg-chocolate-light/20 rounded-2xl shadow-sm border border-gray-100 dark:border-gold/10 overflow-hidden cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-[transform,box-shadow,background-color,border-color] duration-300"
+      className="bg-white dark:bg-chocolate-light rounded-2xl shadow-sm border border-gray-100 dark:border-gold/10 overflow-hidden cursor-pointer sm:hover:shadow-xl sm:hover:-translate-y-1 transition-[transform,box-shadow,background-color,border-color] duration-300 transform-gpu"
       onClick={() => onClick(item)}
     >
-      <div className="relative aspect-[4/5] bg-gray-50 dark:bg-chocolate-light/40">
+      <div className="relative aspect-[4/5] bg-gray-50 dark:bg-chocolate overflow-hidden">
         {imageUrl ? (
-          <MediaPreview media={{type: "image", url: imageUrl}} itemName={item.name} />
+          <div className="w-full h-full transform-gpu">
+            <MediaPreview media={{type: "image", url: imageUrl}} itemName={item.name} />
+          </div>
         ) : (
           <div className="flex items-center justify-center w-full h-full text-gray-300">
             No image
