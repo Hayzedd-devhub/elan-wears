@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
 
     while (exists) {
       slug = generateSlug(name);
-      let existed = await Item.findOne({ slug });
+      const existed = await Item.findOne({ slug });
       exists = !!existed;
     }
 

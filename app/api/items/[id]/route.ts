@@ -39,6 +39,29 @@ export async function PUT(
 
     const { name, description, price, media, category } = body;
 
+    const oldItem = await Item.findById(id);
+    if (!oldItem) {
+      return NextResponse.json({ error: "Item not found" }, { status: 404 });
+    }
+
+    // Check for removed media and delete from Cloudinary
+    if (media !== undefined) {
+      const newUrls = new Set(media.map((m: { url: string }) => m.url));
+      const removedMedia = oldItem.media.filter((m) => !newUrls.has(m.url));
+
+      for (const m of removedMedia) {
+        try {
+          const publicId = m.publicId || m.url.split("/").pop()?.split(".")[0];
+          if (publicId) {
+            const fullPublicId = m.publicId ? publicId : `catalog-items/${publicId}`;
+            await deleteImage(fullPublicId);
+          }
+        } catch (err) {
+          console.error("Error deleting removed media:", err);
+        }
+      }
+    }
+
     const updateData: Record<string, unknown> = {};
     if (name !== undefined) updateData.name = name;
     if (description !== undefined) updateData.description = description;
@@ -47,10 +70,6 @@ export async function PUT(
     if (category !== undefined) updateData.category = category;
 
     const item = await Item.findByIdAndUpdate(id, updateData, { new: true });
-
-    if (!item) {
-      return NextResponse.json({ error: "Item not found" }, { status: 404 });
-    }
 
     revalidatePath("/");
 
@@ -81,12 +100,11 @@ export async function DELETE(
     // Delete media safely from Cloudinary
     try {
       await Promise.all(
-        item.media.map(async ({ url }) => {
-          // Extract public ID from URL
-          const publicId = url.split("/").pop()?.split(".")[0];
-          console.log("public ID", publicId);
-          if (publicId) {
-            return deleteImage(`catalog-items/${publicId}`);
+        item.media.map(async ({ url, publicId }) => {
+          const pid = publicId || url.split("/").pop()?.split(".")[0];
+          if (pid) {
+            const fullPublicId = publicId ? pid : `catalog-items/${pid}`;
+            return deleteImage(fullPublicId);
           }
         }),
       );

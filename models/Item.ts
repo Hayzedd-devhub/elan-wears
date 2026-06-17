@@ -5,7 +5,7 @@ export interface IItem extends Document {
   description: string;
   price: number;
   slug: string;
-  media: { type: "image" | "video"; url: string }[];
+  media: { type: "image" | "video"; url: string; publicId?: string }[];
   category: string;
   createdAt: Date;
   updatedAt: Date;
@@ -17,7 +17,13 @@ const ItemSchema = new Schema<IItem>(
     description: { type: String, default: "" },
     price: { type: Number, required: true },
     slug: { type: String, required: true, unique: true },
-    media: [{ type: { type: String }, url: { type: String } }],
+    media: [
+      {
+        type: { type: String },
+        url: { type: String },
+        publicId: { type: String },
+      },
+    ],
     category: { type: String, required: true },
   },
   { timestamps: true },

@@ -11,7 +11,7 @@ interface ItemFormProps {
     name: string;
     description: string;
     price: number;
-    media: { type: "image" | "video"; url: string }[];
+    media: { type: "image" | "video"; url: string; publicId?: string }[];
     category: string;
   };
   categories: string[];
@@ -25,6 +25,7 @@ interface MediaPreviewState {
   previewUrl: string;
   type: "image" | "video";
   isNew: boolean;
+  publicId?: string;
 }
 
 export function ItemForm({
@@ -58,6 +59,7 @@ export function ItemForm({
         previewUrl: media.url,
         type: media.type,
         isNew: false,
+        publicId: media.publicId,
       }));
       setMediaPreviews(existingPreviews);
     }
@@ -92,50 +94,71 @@ export function ItemForm({
         throw new Error("Please add at least one image or video for your product.");
       }
 
-      // In a real scenario, we only upload 'isNew' files, but here the API seems to expect all?
-      // Actually, looking at the previous code, it sends everything in mediaPreviews.file to /api/upload
-      const uploadFormData = new FormData();
-      let hasNewFiles = false;
-      
+      const existingMedia = mediaPreviews
+        .filter((p) => !p.isNew)
+        .map((p) => ({
+          url: p.previewUrl,
+          type: p.type as "image" | "video",
+          publicId: p.publicId,
+        }));
+
+      const newMedia: { url: string; type: "image" | "video"; publicId: string }[] = [];
+
       for (const preview of mediaPreviews) {
         if (preview.isNew) {
-          uploadFormData.append("file", preview.file);
-          hasNewFiles = true;
-        }
-      }
-
-      if (hasNewFiles) {
-        const response = await fetch("/api/upload", {
-          method: "POST",
-          body: uploadFormData,
-        });
-
-        if (response.ok) {
-          const { data } = (await response.json()) as {
-            data: { url: string; type: "image" | "video" }[];
+          const timestamp = Math.round(new Date().getTime() / 1000);
+          const paramsToSign = {
+            timestamp,
+            folder: "catalog-items",
           };
-          
-          // Combine existing (not new) and freshly uploaded
-          const existingMedia = mediaPreviews
-            .filter(p => !p.isNew)
-            .map(p => ({ url: p.previewUrl, type: p.type }));
-            
-          uploadedMedia = [...existingMedia, ...data];
-        } else {
-          throw new Error("Failed to process media uploads");
+
+          const signResponse = await fetch("/api/upload/sign", {
+            method: "POST",
+            body: JSON.stringify({ paramsToSign }),
+          });
+
+          if (!signResponse.ok) throw new Error("Failed to get upload signature");
+
+          const { signature, apiKey, cloudName } = await signResponse.json();
+
+          const uploadFormData = new FormData();
+          uploadFormData.append("file", preview.file);
+          uploadFormData.append("api_key", apiKey);
+          uploadFormData.append("timestamp", timestamp.toString());
+          uploadFormData.append("signature", signature);
+          uploadFormData.append("folder", "catalog-items");
+
+          const resourceType = preview.type === "video" ? "video" : "image";
+          const uploadResponse = await fetch(
+            `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
+            {
+              method: "POST",
+              body: uploadFormData,
+            },
+          );
+
+          if (!uploadResponse.ok) throw new Error("Failed to upload to Cloudinary");
+
+          const uploadData = await uploadResponse.json();
+          newMedia.push({
+            url: uploadData.secure_url,
+            type: preview.type,
+            publicId: uploadData.public_id,
+          });
         }
-      } else {
-        uploadedMedia = mediaPreviews.map(p => ({ url: p.previewUrl, type: p.type }));
       }
+
+      uploadedMedia = [...existingMedia, ...newMedia];
 
       await onSubmit({
         ...newFormData,
         media: uploadedMedia,
         category: (formData.category === "__new__" ? newCategory : formData.category) || "all",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error submitting form:", error);
-      alert(error.message || "An error occurred while saving. Please try again.");
+      const errorMessage = error instanceof Error ? error.message : "An error occurred while saving. Please try again.";
+      alert(errorMessage);
       setIsUploading(false);
     }
   };

@@ -36,3 +36,15 @@ export async function deleteImage(publicId: string) {
     return { success: false, error: "Failed to delete image" };
   }
 }
+
+export function generateSignature(paramsToSign: Record<string, string | number>) {
+  const signature = cloudinary.utils.api_sign_request(
+    paramsToSign,
+    process.env.CLOUDINARY_API_SECRET!,
+  );
+  return {
+    signature,
+    apiKey: process.env.CLOUDINARY_API_KEY,
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+  };
+}
