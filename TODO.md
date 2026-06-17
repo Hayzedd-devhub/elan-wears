@@ -1,7 +1,7 @@
 # TODO: Modify Item Model for Media Support
 
 ## Tasks
-- [ ] Update Item Model (models/Item.ts): Change images to media with type and url
+- [v] Update Item Model (models/Item.ts): Change images to media with type and url
 - [ ] Update Types (app/types/index.ts): Change images to media
 - [ ] Update Cloudinary Library (lib/cloudinary.ts): Rename uploadImage to uploadMedia, support videos
 - [ ] Update Upload API (app/api/upload/route.ts): Use uploadMedia, return type
