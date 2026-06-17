@@ -12,7 +12,7 @@ Each visitor should be automatically assigned a unique anonymous user ID, stored
 
 Landing Page:
 
-Display:
+Display::
 
 Brand name / business name
 
