@@ -128,4 +128,4 @@ Prioritize clarity over complexity
 
 Avoid unnecessary features
 
-Each screen should solve one clear problem
+Each screen should solve one clear problem.
