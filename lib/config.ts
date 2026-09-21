@@ -21,6 +21,7 @@ export const siteConfig = {
       ? ("square" as const)
       : ("landscape" as const),
   backgroundUrl: process.env.NEXT_PUBLIC_BACKGROUND_URL || "/background.jpeg",
+  faviconUrl: process.env.NEXT_PUBLIC_FAVICON_URL || "/favicon.ico",
   heroTitle: process.env.NEXT_PUBLIC_HERO_TITLE || "Welcome to Our Collection",
   heroSubtitle:
     process.env.NEXT_PUBLIC_HERO_SUBTITLE ||

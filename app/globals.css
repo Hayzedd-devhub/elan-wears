@@ -56,6 +56,11 @@
   body {
     font-family: "Futura PT", sans-serif;
     overscroll-behavior-y: none;
+    /* The sticky header's height changes as its search/sort row auto-hides
+       on scroll. Without this, the browser's scroll anchoring compensates
+       for that layout shift by adjusting scrollY, which re-triggers the
+       scroll handler and creates an infinite hide/show feedback loop. */
+    overflow-anchor: none;
   }
 }
 

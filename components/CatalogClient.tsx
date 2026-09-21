@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Header } from "@/components/Header";
 import { CategoryTabs } from "@/components/CategoryTabs";
+import { SortOption } from "@/components/SortDropdown";
 import { ItemCard } from "@/components/ItemCard";
 import { ItemModal } from "@/components/ItemModal";
 import { useAnonymousUser, useFavourites } from "@/hooks/useAnonymousUser";
@@ -23,6 +24,7 @@ export default function CatalogClient({
   const [categories] = useState([...initialCategories, "Favourites"]);
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<SortOption>("latest");
   const [selectedItem, setSelectedItem] = useState<
     (typeof initialItems)[0] | null
   >(null);
@@ -52,12 +54,35 @@ export default function CatalogClient({
       filtered = filtered.filter(
         (item) =>
           item.name.toLowerCase().includes(query) ||
-          item.description.toLowerCase().includes(query),
+          item.description.toLowerCase().includes(query) ||
+          item.category.toLowerCase().includes(query),
       );
     }
 
-    return filtered;
-  }, [items, activeCategory, searchQuery, favourites]);
+    const sorted = [...filtered];
+    switch (sortBy) {
+      case "price-asc":
+        sorted.sort((a, b) => a.price - b.price);
+        break;
+      case "price-desc":
+        sorted.sort((a, b) => b.price - a.price);
+        break;
+      case "popular":
+        sorted.sort(
+          (a, b) => (b.favouritesCount ?? 0) - (a.favouritesCount ?? 0),
+        );
+        break;
+      case "latest":
+      default:
+        sorted.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
+        break;
+    }
+
+    return sorted;
+  }, [items, activeCategory, searchQuery, favourites, sortBy]);
 
   const handleItemClick = (item: ItemProps) => {
     setSelectedItem(item);
@@ -91,6 +116,9 @@ export default function CatalogClient({
         onFavouritesClick={() => {
           setActiveCategory("Favourites");
         }}
+        favouritesCount={favourites.size}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
       />
 
       {!searchQuery && activeCategory === "all" && (

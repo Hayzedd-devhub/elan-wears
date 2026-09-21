@@ -7,4 +7,5 @@ export interface ItemProps {
   media: { type: 'image' | 'video'; url: string; publicId?: string }[];
   category: string;
   createdAt: Date;
+  favouritesCount?: number;
 }

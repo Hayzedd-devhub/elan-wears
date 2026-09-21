@@ -71,9 +71,10 @@ set of environment variables — no code changes should be necessary. Checklist:
 3. **Logo / background** — pick one:
    - Replace `public/logo-main.jpeg` and `public/background.jpeg` with the client's images before building, or
    - Host the images externally and set `NEXT_PUBLIC_LOGO_URL` / `NEXT_PUBLIC_BACKGROUND_URL` — no rebuild needed to swap them later.
-4. **Favicon / app icons** — these are picked up automatically by Next.js's file-based icon convention (no code involved), so they must be replaced with the client's own icon before building:
-   - `app/favicon.ico`, `app/apple-icon.png`, `app/icon0.svg`, `app/icon1.png`
-   - `public/web-app-manifest-192x192.png`, `public/web-app-manifest-512x512.png` (used by `app/manifest.ts` for the PWA icon)
+4. **Favicon** — pick one:
+   - Replace `public/favicon.ico` with the client's icon before building, or
+   - Host an icon externally and set `NEXT_PUBLIC_FAVICON_URL` — no rebuild needed to swap it later.
+   - `public/web-app-manifest-192x192.png`, `public/web-app-manifest-512x512.png` (used by `app/manifest.ts` for the PWA icon) are still file-based and must be replaced directly before building.
    - A tool like [realfavicongenerator.net](https://realfavicongenerator.net) can generate a matching set from the client's logo in one pass.
 5. **Colors** — set `NEXT_PUBLIC_THEME_COLOR` (base/dark) and `NEXT_PUBLIC_ACCENT_COLOR` (highlight) to recolor the whole app — no rebuild-only edit needed. The canonical palette itself still lives in the `@theme` block at the top of `app/globals.css` (`--color-gold`, `--color-chocolate`, etc.); the env vars override those at runtime (see `lib/theme.ts`). Only touch `globals.css` directly if a client needs a structurally different palette (e.g. more than two brand hues).
 6. Log in at `/admin/login` once — the first username/password entered becomes that deployment's permanent admin account.

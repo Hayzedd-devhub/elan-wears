@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.webUrl),
   title: siteConfig.businessName,
   description: `Digital catalog for ${siteConfig.businessName}`,
+  icons: {
+    icon: siteConfig.faviconUrl,
+    shortcut: siteConfig.faviconUrl,
+    apple: siteConfig.faviconUrl,
+  },
 };
 
 export const viewport: Viewport = {
