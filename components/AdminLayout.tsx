@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import {
   LayoutDashboard,
   Package,
@@ -14,6 +13,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
+import { siteConfig } from "@/lib/config";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -61,11 +61,11 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     <div className="min-h-screen bg-[#FDFBF7] dark:bg-chocolate relative">
       {/* Brand Background Overlay */}
       <div className="fixed inset-0 z-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none">
-        <Image
-          src="/background.jpeg"
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={siteConfig.backgroundUrl}
           alt="Brand Background"
-          fill
-          className="object-cover"
+          className="w-full h-full object-cover"
         />
       </div>
 
@@ -86,16 +86,16 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         <div className="flex flex-col h-full">
           <div className="flex items-center gap-3 h-20 px-6 border-b border-gray-100 dark:border-gold/10">
             <div className="relative w-10 h-10 rounded-xl overflow-hidden border-2 border-gold">
-              <Image
-                src="/brand-logo.jpeg"
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={siteConfig.logoUrl}
                 alt="Brand Logo"
-                fill
-                className="object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
             <div>
               <h1 className="text-lg font-bold text-chocolate dark:text-gold tracking-tight">
-                Komfy Sole
+                {siteConfig.businessName}
               </h1>
               <p className="text-[10px] text-gray-500 dark:text-gold/60 uppercase font-bold tracking-widest">
                 Admin Portal
@@ -173,8 +173,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
         <footer className="p-6 text-center border-t border-gray-100 dark:border-gold/5 mt-auto">
           <p className="text-xs text-gray-400 dark:text-gold/30 font-medium">
-            &copy; {new Date().getFullYear()} Komfy Sole Admin Console. All
-            rights reserved.
+            &copy; {new Date().getFullYear()} {siteConfig.businessName} Admin
+            Console. All rights reserved.
           </p>
         </footer>
       </div>

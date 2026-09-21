@@ -39,11 +39,12 @@ Copy `.env.example` to `.env.local` and fill in your values:
 cp .env.example .env.local
 ```
 
-Required environment variables:
+See `.env.example` for the full, authoritative list of variables and comments
+on each. In short:
 
 ```env
 # MongoDB Connection String
-MONGODB_URI=mongodb://localhost:27017/catelog
+MONGODB_URI=mongodb://localhost:27017/catalog
 
 # Cloudinary Configuration
 CLOUDINARY_CLOUD_NAME=your_cloud_name
@@ -53,12 +54,32 @@ CLOUDINARY_API_SECRET=your_api_secret
 # Admin Credentials
 # (Not required - the first user to login will be created as admin)
 
-# WhatsApp Number (format: 1234567890, no + sign)
-WHATSAPP_NUMBER=1234567890
+# WhatsApp Number (format: 2348012345678, digits only, no + sign)
+NEXT_PUBLIC_WHATSAPP_NUMBER=2348012345678
 
 # Business Name
 NEXT_PUBLIC_BUSINESS_NAME=Your Business Name
 ```
+
+## Deploying for a New Client (White-Label)
+
+This codebase is designed so that a new client deployment only requires a new
+set of environment variables — no code changes should be necessary. Checklist:
+
+1. Create a new hosting project (e.g. a new Vercel project) from this same repo/branch.
+2. Set all variables from `.env.example` for that client (own Mongo DB, own Cloudinary account, own business name/WhatsApp number/URL).
+3. **Logo / background** — pick one:
+   - Replace `public/logo-main.jpeg` and `public/background.jpeg` with the client's images before building, or
+   - Host the images externally and set `NEXT_PUBLIC_LOGO_URL` / `NEXT_PUBLIC_BACKGROUND_URL` — no rebuild needed to swap them later.
+4. **Favicon / app icons** — these are picked up automatically by Next.js's file-based icon convention (no code involved), so they must be replaced with the client's own icon before building:
+   - `app/favicon.ico`, `app/apple-icon.png`, `app/icon0.svg`, `app/icon1.png`
+   - `public/web-app-manifest-192x192.png`, `public/web-app-manifest-512x512.png` (used by `app/manifest.ts` for the PWA icon)
+   - A tool like [realfavicongenerator.net](https://realfavicongenerator.net) can generate a matching set from the client's logo in one pass.
+5. **Colors** — the palette lives in the single `@theme` block at the top of `app/globals.css` (`--color-gold`, `--color-chocolate`, etc.). Edit those values per client if the palette needs to change; everything else in the app references these tokens.
+6. Log in at `/admin/login` once — the first username/password entered becomes that deployment's permanent admin account.
+7. If a client ever needs a genuinely different component (not just different text/colors/logo), keep it out of the shared components and gate it behind its own env var (e.g. `NEXT_PUBLIC_CLIENT_ID`) rather than branching the codebase — no client currently needs this.
+
+Each client should have its own `.env` — never reuse one client's `.env` file as a starting point that then gets hand-edited for another; keep credentials per-deployment (e.g. one Vercel env group per project).
 
 ### 3. Start Development Server
 
@@ -119,9 +140,9 @@ catelog/
 
 Access the admin panel at `/admin/login`
 
-Default credentials (set in environment variables):
-- Username: `admin`
-- Password: `admin123` (change in production!)
+There are no default or env-configured credentials. The first username/password
+submitted at that URL is created as the permanent admin account for that
+deployment (stored in MongoDB, password hashed).
 
 ### Admin Features
 
@@ -180,7 +201,7 @@ CMD ["npm", "start"]
 
 ## Production Considerations
 
-1. **Change admin credentials** - Use strong passwords in environment variables
+1. **Set a strong admin password** - Whatever is entered on first `/admin/login` becomes permanent, so use a strong password the first time
 2. **Use production MongoDB** - Consider MongoDB Atlas for cloud database
 3. **Configure Cloudinary** - Set up proper Cloudinary credentials
 4. **HTTPS** - Ensure SSL certificate for production

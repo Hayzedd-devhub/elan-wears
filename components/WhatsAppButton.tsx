@@ -1,9 +1,9 @@
 "use client";
 
 import { getShareUrl } from "@/lib/util";
+import { siteConfig } from "@/lib/config";
 import { MessageCircle } from "lucide-react";
-const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
-const businessName = process.env.NEXT_PUBLIC_BUSINESS_NAME || "My Catalog";
+const whatsappNumber = siteConfig.whatsappNumber;
 
 interface WhatsAppButtonProps {
   itemName: string;
@@ -13,7 +13,7 @@ interface WhatsAppButtonProps {
 
 export function WhatsAppButton({ itemName, price, slug }: WhatsAppButtonProps) {
   const formatPrice = (price: number) => {
-    return `₦${price.toLocaleString()}`;
+    return `${siteConfig.currencySymbol}${price.toLocaleString()}`;
   };
 
   const handleWhatsApp = () => {

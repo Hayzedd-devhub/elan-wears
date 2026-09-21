@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Upload, X, Plus, Trash2, Camera, Tag, DollarSign, FileText } from "lucide-react";
+import { siteConfig } from "@/lib/config";
 import MediaPreview from "./MediaPreview";
 
 interface ItemFormProps {
@@ -258,7 +259,7 @@ export function ItemForm({
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-bold text-chocolate dark:text-gold-light ml-1">
                 <DollarSign className="w-4 h-4" />
-                Price (₦)
+                Price ({siteConfig.currencySymbol})
               </label>
               <input
                 type="text"

@@ -1,7 +1,7 @@
 "use client";
 
 import { Search, Heart } from "lucide-react";
-import Image from "next/image";
+import { siteConfig } from "@/lib/config";
 
 interface HeaderProps {
   businessName: string;
@@ -22,11 +22,11 @@ export function Header({
         <div className="flex items-center justify-between gap-4 mb-4">
           <div className="flex items-center gap-3">
             <div className="relative w-40 h-10 rounded-md overflow-hidden border border-gold/30">
-              <Image
-                src="/logo-main.jpeg"
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={siteConfig.logoUrl}
                 alt="Brand Logo"
-                fill
-                className="object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
             <h1 className="text-2xl aesthetic-title tracking-tight">

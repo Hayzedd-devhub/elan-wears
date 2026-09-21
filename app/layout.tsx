@@ -1,9 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: process.env.NEXT_PUBLIC_BUSINESS_NAME || "My Catalog",
-  description: "Digital catalog for products and services",
+  metadataBase: new URL(siteConfig.webUrl),
+  title: siteConfig.businessName,
+  description: `Digital catalog for ${siteConfig.businessName}`,
+};
+
+export const viewport: Viewport = {
+  themeColor: siteConfig.themeColor,
 };
 
 export default function RootLayout({
@@ -19,4 +25,3 @@ export default function RootLayout({
     </html>
   );
 }
-

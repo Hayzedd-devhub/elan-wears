@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import Image from "next/image";
 import { Header } from "@/components/Header";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { ItemCard } from "@/components/ItemCard";
 import { ItemModal } from "@/components/ItemModal";
 import { useAnonymousUser, useFavourites } from "@/hooks/useAnonymousUser";
 import { getShareUrl } from "@/lib/util";
+import { siteConfig } from "@/lib/config";
 import { ItemProps } from "@/app/types";
 
 interface CatalogClientProps {
@@ -31,8 +31,8 @@ export default function CatalogClient({
   const userId = useAnonymousUser();
   const { favourites, toggleFavourite } = useFavourites(userId);
 
-  const businessName = process.env.NEXT_PUBLIC_BUSINESS_NAME || "My Catalog";
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+  const businessName = siteConfig.businessName;
+  const whatsappNumber = siteConfig.whatsappNumber;
 
   const filteredItems = useMemo(() => {
     let filtered = items;
@@ -75,7 +75,7 @@ export default function CatalogClient({
 
   const handleWhatsApp = (item: ItemProps) => {
     const formatPrice = (price: number) => {
-      return `₦${price.toLocaleString()}`;
+      return `${siteConfig.currencySymbol}${price.toLocaleString()}`;
     };
     const message = `Hi, I found interest in this item: ${item.name} - (${formatPrice(item.price)}) \n\n${getShareUrl(item.slug) || ""}`;
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
@@ -96,20 +96,18 @@ export default function CatalogClient({
       {!searchQuery && activeCategory === "all" && (
         <div className="relative h-48 sm:h-64 overflow-hidden mb-6">
           <div className="absolute inset-0 bg-black/40 z-10" />
-          <Image
-            src="/background.jpeg"
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={siteConfig.backgroundUrl}
             alt="Brand Background"
-            fill
-            className="object-cover"
-            priority
+            className="absolute inset-0 w-full h-full object-cover"
           />
           <div className="bg-[#000000CC] absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2 drop-shadow-lg tracking-tight">
-              Premium Footwear
+              {siteConfig.heroTitle}
             </h2>
             <p className="text-gold-light text-sm sm:text-base max-w-md drop-shadow-md">
-              Discover comfort and style in every step with our exclusive
-              collection.
+              {siteConfig.heroSubtitle}
             </p>
           </div>
         </div>

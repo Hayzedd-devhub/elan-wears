@@ -109,7 +109,7 @@ export default function AdminCategoriesPage() {
               Product Categories
             </h1>
             <p className="text-gray-500 dark:text-gold/60 mt-1">
-              Organize your footwear collection into logical groups.
+              Organize your catalog into logical groups.
             </p>
           </div>
           {!showForm && (

@@ -10,6 +10,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
+import { siteConfig } from "@/lib/config";
 
 interface DashboardStats {
   totalItems: number;
@@ -89,7 +90,7 @@ export default function AdminDashboard() {
     },
     {
       title: "Price Range",
-      value: `₦${stats.totalRevenue.toLocaleString()}`,
+      value: `${siteConfig.currencySymbol}${stats.totalRevenue.toLocaleString()}`,
       icon: DollarSign,
       color: "bg-gold dark:bg-gold-light/20",
       iconColor: "text-chocolate dark:text-gold",

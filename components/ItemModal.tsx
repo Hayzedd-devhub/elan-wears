@@ -11,6 +11,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import { ItemProps } from "@/app/types";
+import { siteConfig } from "@/lib/config";
 import MediaPreview from "./MediaPreview";
 
 interface ItemModalProps {
@@ -118,7 +119,7 @@ export function ItemModal({
           </h2>
 
           <p className="text-3xl font-extrabold text-chocolate dark:text-gold flex items-center gap-1 mb-6">
-            <span className="text-lg font-normal opacity-80">₦</span>
+            <span className="text-lg font-normal opacity-80">{siteConfig.currencySymbol}</span>
             {item.price.toLocaleString()}
           </p>
 

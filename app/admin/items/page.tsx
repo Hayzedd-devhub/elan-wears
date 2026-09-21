@@ -17,7 +17,8 @@ import {
 } from "lucide-react";
 import { ItemProps } from "@/app/types";
 import MediaPreview from "@/components/MediaPreview";
-const baseUrl = process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000";
+import { siteConfig } from "@/lib/config";
+const baseUrl = siteConfig.webUrl;
 
 export default function AdminItemsPage() {
   const [items, setItems] = useState<ItemProps[]>([]);
@@ -136,7 +137,7 @@ export default function AdminItemsPage() {
     item: ItemProps,
   ) => {
     const url = getShareUrl(item.slug);
-    const text = `Check out this item: ${item.name} - ₦${item.price.toLocaleString()}`;
+    const text = `Check out this item: ${item.name} - ${siteConfig.currencySymbol}${item.price.toLocaleString()}`;
     const encodedUrl = encodeURIComponent(url);
     const encodedText = encodeURIComponent(text);
 
@@ -161,7 +162,7 @@ export default function AdminItemsPage() {
 
   const handleNativeShare = async (item: ItemProps) => {
     const url = getShareUrl(item.slug);
-    const text = `Check out this item: ${item.name} - ₦${item.price.toLocaleString()}`;
+    const text = `Check out this item: ${item.name} - ${siteConfig.currencySymbol}${item.price.toLocaleString()}`;
 
     if (navigator.share) {
       try {
@@ -192,7 +193,7 @@ export default function AdminItemsPage() {
               Inventory Management
             </h1>
             <p className="text-gray-500 dark:text-gold/60 mt-1">
-              Organize and update your collection of premium footwear.
+              Organize and update your product catalog.
             </p>
           </div>
           {!showForm && (
@@ -310,7 +311,7 @@ export default function AdminItemsPage() {
                           </td>
                           <td className="px-6 py-4">
                             <p className="font-black text-chocolate dark:text-gold">
-                              ₦{item.price.toLocaleString()}
+                              {siteConfig.currencySymbol}{item.price.toLocaleString()}
                             </p>
                           </td>
                           <td className="px-6 py-4 text-right">

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { AdminLayout } from '@/components/AdminLayout';
 import { Heart, Users, TrendingUp, Award, Star } from 'lucide-react';
 import MediaPreview from '@/components/MediaPreview';
+import { siteConfig } from '@/lib/config';
 
 interface InsightData {
   userFavourites: Record<string, string[]>;
@@ -199,7 +200,7 @@ export default function AdminInsightsPage() {
                       </td>
                       <td className="px-8 py-6">
                         <p className="font-black text-chocolate dark:text-gold">
-                          ₦{item.price.toLocaleString()}
+                          {siteConfig.currencySymbol}{item.price.toLocaleString()}
                         </p>
                       </td>
                       <td className="px-8 py-6 text-right">

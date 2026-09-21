@@ -1,8 +1,9 @@
 import crypto from "crypto";
 import { promisify } from "util";
+import { siteConfig } from "@/lib/config";
 
 const pbkdf2 = promisify(crypto.pbkdf2);
-const baseUrl = process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000";
+const baseUrl = siteConfig.webUrl;
 
 export async function hashPassword(password: string): Promise<string> {
   const salt = crypto.randomBytes(16).toString("hex");

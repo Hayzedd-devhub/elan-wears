@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { Heart, MessageCircle, DollarSign } from 'lucide-react';
 import { ItemProps } from '@/app/types';
+import { siteConfig } from '@/lib/config';
 import MediaPreview from './MediaPreview';
 const placeholderImage = 'https://res.cloudinary.com/dchucv6ut/image/upload/v1769350752/catalog-items/mbwb1hff7cludheemnoz.png';
 
@@ -57,7 +58,7 @@ export function ItemCard({
           {item.name}
         </h3>
         <p className="text-xl font-extrabold text-chocolate dark:text-gold flex items-center gap-0.5 mb-4">
-          <span className="text-sm font-normal opacity-80 mr-0.5">₦</span>
+          <span className="text-sm font-normal opacity-80 mr-0.5">{siteConfig.currencySymbol}</span>
           {item.price.toLocaleString()}
         </p>
 

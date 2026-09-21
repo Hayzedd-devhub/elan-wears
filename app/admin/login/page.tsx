@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ShieldCheck, Info, Eye, EyeOff } from "lucide-react";
-import Image from "next/image";
+import { siteConfig } from "@/lib/config";
 
 export default function AdminLogin() {
   const [username, setUsername] = useState("");
@@ -46,11 +46,11 @@ export default function AdminLogin() {
         <div className="bg-white dark:bg-chocolate-light/20 rounded-3xl shadow-2xl p-8 border border-gray-100 dark:border-gold/10 backdrop-blur-sm">
           <div className="flex flex-col items-center justify-center gap-4 mb-10">
             <div className="relative w-46 h-16 rounded-2xl overflow-hidden border-2 border-gold shadow-lg">
-              <Image
-                src="/logo-main.jpeg"
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={siteConfig.logoUrl}
                 alt="Brand Logo"
-                fill
-                className="object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
             <div className="text-center">

@@ -5,8 +5,9 @@ import Link from "next/link";
 import { ChevronLeft, Calendar, Tag, Share2 } from "lucide-react";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { ProductGallery } from "@/components/ProductGallery";
+import { siteConfig } from "@/lib/config";
 
-const baseUrl = process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000";
+const baseUrl = siteConfig.webUrl;
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: PageProps) {
   const ogImage = item.media?.find(m => m.type === 'image')?.url || item.media?.[0]?.url;
 
   return {
-    title: `${item.name} | ${process.env.NEXT_PUBLIC_BUSINESS_NAME || "My Catalog"}`,
+    title: `${item.name} | ${siteConfig.businessName}`,
     description: item.description || `Check out ${item.name} on our catalog.`,
     openGraph: {
       title: item.name,
@@ -100,7 +101,7 @@ export default async function ItemPage({ params }: PageProps) {
 
               <div className="flex items-center gap-4">
                 <p className="text-4xl font-black text-chocolate dark:text-gold">
-                  <span className="text-xl font-normal opacity-60 mr-1">₦</span>
+                  <span className="text-xl font-normal opacity-60 mr-1">{siteConfig.currencySymbol}</span>
                   {item.price.toLocaleString()}
                 </p>
               </div>
