@@ -90,7 +90,11 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               <img
                 src={siteConfig.logoUrl}
                 alt="Brand Logo"
-                className="w-full h-full object-cover"
+                className={`w-full h-full ${
+                  siteConfig.logoOrientation === "square"
+                    ? "object-contain"
+                    : "object-cover"
+                }`}
               />
             </div>
             <div>

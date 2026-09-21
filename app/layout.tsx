@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { siteConfig } from "@/lib/config";
+import { getThemeOverrideStyles } from "@/lib/theme";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.webUrl),
@@ -20,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
+        <style dangerouslySetInnerHTML={{ __html: getThemeOverrideStyles() }} />
         {children}
       </body>
     </html>

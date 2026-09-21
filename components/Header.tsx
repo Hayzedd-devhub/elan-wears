@@ -21,12 +21,22 @@ export function Header({
       <div className="max-w-6xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between gap-4 mb-4">
           <div className="flex items-center gap-3">
-            <div className="relative w-40 h-10 rounded-md overflow-hidden border border-gold/30">
+            <div
+              className={`relative overflow-hidden border border-gold/30 ${
+                siteConfig.logoOrientation === "square"
+                  ? "w-10 h-10 rounded-xl"
+                  : "w-40 h-10 rounded-md"
+              }`}
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={siteConfig.logoUrl}
                 alt="Brand Logo"
-                className="w-full h-full object-cover"
+                className={`w-full h-full ${
+                  siteConfig.logoOrientation === "square"
+                    ? "object-contain"
+                    : "object-cover"
+                }`}
               />
             </div>
             <h1 className="text-2xl aesthetic-title tracking-tight">

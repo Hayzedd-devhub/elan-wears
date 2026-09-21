@@ -108,10 +108,7 @@ export function ItemForm({
       for (const preview of mediaPreviews) {
         if (preview.isNew) {
           const timestamp = Math.round(new Date().getTime() / 1000);
-          const paramsToSign = {
-            timestamp,
-            folder: "catalog-items",
-          };
+          const paramsToSign = { timestamp };
 
           const signResponse = await fetch("/api/upload/sign", {
             method: "POST",
@@ -120,14 +117,14 @@ export function ItemForm({
 
           if (!signResponse.ok) throw new Error("Failed to get upload signature");
 
-          const { signature, apiKey, cloudName } = await signResponse.json();
+          const { signature, apiKey, cloudName, folder } = await signResponse.json();
 
           const uploadFormData = new FormData();
           uploadFormData.append("file", preview.file);
           uploadFormData.append("api_key", apiKey);
           uploadFormData.append("timestamp", timestamp.toString());
           uploadFormData.append("signature", signature);
-          uploadFormData.append("folder", "catalog-items");
+          uploadFormData.append("folder", folder);
 
           const resourceType = preview.type === "video" ? "video" : "image";
           const uploadResponse = await fetch(

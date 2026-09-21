@@ -75,7 +75,7 @@ set of environment variables — no code changes should be necessary. Checklist:
    - `app/favicon.ico`, `app/apple-icon.png`, `app/icon0.svg`, `app/icon1.png`
    - `public/web-app-manifest-192x192.png`, `public/web-app-manifest-512x512.png` (used by `app/manifest.ts` for the PWA icon)
    - A tool like [realfavicongenerator.net](https://realfavicongenerator.net) can generate a matching set from the client's logo in one pass.
-5. **Colors** — the palette lives in the single `@theme` block at the top of `app/globals.css` (`--color-gold`, `--color-chocolate`, etc.). Edit those values per client if the palette needs to change; everything else in the app references these tokens.
+5. **Colors** — set `NEXT_PUBLIC_THEME_COLOR` (base/dark) and `NEXT_PUBLIC_ACCENT_COLOR` (highlight) to recolor the whole app — no rebuild-only edit needed. The canonical palette itself still lives in the `@theme` block at the top of `app/globals.css` (`--color-gold`, `--color-chocolate`, etc.); the env vars override those at runtime (see `lib/theme.ts`). Only touch `globals.css` directly if a client needs a structurally different palette (e.g. more than two brand hues).
 6. Log in at `/admin/login` once — the first username/password entered becomes that deployment's permanent admin account.
 7. If a client ever needs a genuinely different component (not just different text/colors/logo), keep it out of the shared components and gate it behind its own env var (e.g. `NEXT_PUBLIC_CLIENT_ID`) rather than branching the codebase — no client currently needs this.
 

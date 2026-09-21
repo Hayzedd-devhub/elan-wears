@@ -8,10 +8,19 @@ cloudinary.config({
 
 export { cloudinary };
 
+// Clients without a CLIENT_ID (all pre-existing deployments) keep uploading to
+// the flat "catalog-items" folder they've always used — untouched, no migration.
+// A client with CLIENT_ID set gets its own subfolder so new uploads don't mix
+// with other clients sharing the same Cloudinary account.
+export function getMediaFolder(): string {
+  const clientId = process.env.CLIENT_ID;
+  return clientId ? `${clientId}/catalog-items` : "catalog-items";
+}
+
 export async function uploadMedia(file: string, type: "image" | "video") {
   try {
     const result = await cloudinary.uploader.upload(file, {
-      folder: "catalog-items",
+      folder: getMediaFolder(),
       resource_type: "auto",
     });
     return {

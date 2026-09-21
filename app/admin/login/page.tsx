@@ -45,12 +45,22 @@ export default function AdminLogin() {
       <div className="w-full max-w-md">
         <div className="bg-white dark:bg-chocolate-light/20 rounded-3xl shadow-2xl p-8 border border-gray-100 dark:border-gold/10 backdrop-blur-sm">
           <div className="flex flex-col items-center justify-center gap-4 mb-10">
-            <div className="relative w-46 h-16 rounded-2xl overflow-hidden border-2 border-gold shadow-lg">
+            <div
+              className={`relative rounded-2xl overflow-hidden border-2 border-gold shadow-lg ${
+                siteConfig.logoOrientation === "square"
+                  ? "w-16 h-16"
+                  : "w-46 h-16"
+              }`}
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={siteConfig.logoUrl}
                 alt="Brand Logo"
-                className="w-full h-full object-cover"
+                className={`w-full h-full ${
+                  siteConfig.logoOrientation === "square"
+                    ? "object-contain"
+                    : "object-cover"
+                }`}
               />
             </div>
             <div className="text-center">
